@@ -1,6 +1,6 @@
 from tkinter import *
 from Hero import Hero
-
+from Layout import *
 IMG_SIZE = 72
 WIDTH = 10 * IMG_SIZE
 HEIGHT = 10 * IMG_SIZE
@@ -14,56 +14,24 @@ hero = Hero()
 
 # This method is called continuously by the main game loop
 
-filesList = []
-layoutArray = []
-layoutFile = open('layout_structure.txt', 'r')
-layoutLine = layoutFile.readlines()
-currentLine = 0
-
-for line in layoutLine:
-    # filesList.append(line)
-    layoutArray.append(line)
-    # print('f------', line, layoutArray)
-    # for index, block in enumerate(layoutArray):
-    # print('-----x', block, index)
-    # # print(block[0])
-    # for i, x in enumerate(block):
-    #     print(block[index][i])
-    #     print('----')
-    # lineIndex = 0
-    # for struct in line:
-
-    #     if struct == 'o':
-    #         filesList.append([lineIndex, currentLine, 'root.floor'])
-    #     else:
-    #         filesList.append([lineIndex, currentLine, 'root.wall'])
-    #     lineIndex += 1
-    # currentLine += 1
-
 
 def draw_screen():
     canvas.delete("all")
-    # for i in filesList:
-    #     for j in i:
-    #         canvas.create_image(i[0] * IMG_SIZE, i[1] * IMG_SIZE,
-    #                             image=root.floor if i[2] == 'root.floor' else root.wall, anchor=NW)
-
-    # canvas.create_image(3 * IMG_SIZE, 0, image=root.boss, anchor=NW)
     row = 0
     for index, block in enumerate(layoutArray):
-        print('-----x', block, index)
-        # print(block[0])
-
+        # print('-----x', block, index)
         for i in range(len(block) - 1):
-            print('----', i, block[i])
+            # print('----', i, block[i])
             canvas.create_image(i * IMG_SIZE, row * IMG_SIZE,
                                 image=root.floor if block[i] == 'o' else root.wall, anchor=NW)
         if index == len(layoutArray) - 1:
             break
         row += 1
+    canvas.create_image(3 * IMG_SIZE, 0, image=root.boss, anchor=NW)
+
     canvas.create_image(hero.x * IMG_SIZE, hero.y *
                         IMG_SIZE, image=getattr(root, hero.img), anchor=NW)
-    #   canvas.create_image(2 * IMG_SIZE, 0, image=root.skeleton, anchor=NW)
+    canvas.create_image(2 * IMG_SIZE, 0, image=root.skeleton, anchor=NW)
 
     # Loading images. You can access these loaded images from the root object.
     # For example: root.floor or getattr(root, "floor")
@@ -84,6 +52,9 @@ def load_images():
 load_images()
 
 # Binding keyboard key events to functions
+
+
+# def dontMove():
 
 
 def leftKey(event):
