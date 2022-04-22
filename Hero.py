@@ -1,4 +1,5 @@
-from Layout import *
+from Layout import layoutArray
+from time import time, sleep
 
 
 class Hero:
@@ -10,17 +11,11 @@ class Hero:
 
     def move(self, img, x=0, y=0):
         self.img = img
-        print(layoutArray[self.y][self.x], '----', 'x:', x, 'y:', y)
-
-        if x == 1 and layoutArray[self.y][self.x + 1] is 'o':
+        if x and layoutArray[self.y][self.x + x] is 'o':
             self.x += x
 
-        if x == -1 and layoutArray[self.y][self.x - 1] is 'o':
-            self.x += x
-
-        if y == 1 and layoutArray[self.y + 1][self.x] is 'o':
-            self.y += y
-        if y == -1 and layoutArray[self.y - 1][self.x] is 'o':
+        if y and layoutArray[self.y + y][self.x] is 'o':
+            # while y:
             self.y += y
 
         print(self.x, self.y)

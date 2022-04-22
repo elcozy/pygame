@@ -1,18 +1,12 @@
-
-layoutArray = []
-layoutFile = open('layout_structure.txt', 'r')
-layoutLine = layoutFile.readlines()
-currentLine = 0
-
-for line in layoutLine:
-    layoutArray.append(line)
+from Layout import layoutArray
+from time import time, sleep
 
 
-class Skeleton:
+class Boss:
 
     def __init__(self):
-        self.x = 2
-        self.y = 1
+        self.x = 9
+        self.y = 3
 
     def start(self, x=0, y=0):
         print(layoutArray[self.y][self.x], '----', 'x:', x, 'y:', y)
