@@ -1,21 +1,17 @@
-from Layout import layoutArray
 from time import time, sleep
+from random import randint
+from maps import tiles
 
 
 class Boss:
 
     def __init__(self):
-        self.x = 9
-        self.y = 3
+        self.x = randint(0, 9)
+        self.y = randint(0, 9)
 
-    def start(self, x=0, y=0):
-        print(layoutArray[self.y][self.x], '----', 'x:', x, 'y:', y)
+    def checkPosition(self):
+        layoutArray = tiles
 
-        if x and layoutArray[self.y][self.x + x] is 'o':
-            self.x += x
-
-        if y and layoutArray[self.y + y][self.x] is 'o':
-            # while y:
-            self.y += y
-
-        print(self.x, self.y)
+        while layoutArray[self.y][self.x] is 'x':
+            self.x = randint(0, 9)
+            self.y = randint(0, 9)
