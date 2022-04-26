@@ -8,6 +8,7 @@ tileFile = open('tiles.txt', 'r').readlines()
 
 for line in tileFile:
     tiles.append(line)
+print(tiles)
 
 
 class MapTiles:

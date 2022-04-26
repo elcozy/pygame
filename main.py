@@ -1,7 +1,7 @@
 import time
 from tkinter import *
 from hero import Hero
-from skeleton import Skeleton, Skeletons, MonsterLevel
+from skeleton import SkeletonMovement, Skeletons
 from boss import Boss
 from maps import MapTiles
 from random import randint
@@ -21,13 +21,13 @@ canvas = Canvas(root, width=WIDTH, height=HEIGHT + 40, bg='white')
 canvas.pack()
 
 hero = Hero(FILEPATH)
-skeleton = Skeleton()
+skeletonMove = SkeletonMovement()
 skeletonMain = Skeletons()
-skeletonLevel = MonsterLevel()
 boss = Boss()
-gamelayout = GameLayout(hero, FILEPATH, IMG_SIZE)
+heroHealth = hero.herosHealth()
+gamelayout = GameLayout(hero, heroHealth, IMG_SIZE)
 mapTiles = MapTiles(FILEPATH, IMG_SIZE)
-skeletonLevel.checkSkeletons()
+
 # This method is called continuously by the main game loop
 
 
@@ -36,12 +36,11 @@ def draw_tiles():
     canvas.create_rectangle(0, 0, WIDTH, HEIGHT + 10, fill='green')
     mapTiles.drawTiles(canvas)
     skeletonMain.createEnemies(canvas)
-    gamelayout.createInfo(
-        canvas,  WIDTH, HEIGHT, 8, 2, 5, 9)
+    gamelayout.createInfo(canvas,  WIDTH, HEIGHT)
     hero.createHero(canvas, IMG_SIZE)
 
 
-skeleton.checkPosition()
+# skeleton.checkPosition()
 boss.checkPosition()
 # Binding keyboard key events to functions
 
@@ -53,14 +52,13 @@ def keyPress(key):
     y = hero.hero_position[1]
 
     if key == 'LEFT':
-        hero.move(x=-1 if x > 0 else 0, img="hero-left")
-        print('hrt')
+        hero.moveHero(x=-1 if x > 0 else 0, img="hero-left")
     if key == 'RIGHT':
-        hero.move(x=1 if x < 9 else 0, img="hero-right")
+        hero.moveHero(x=1 if x < 9 else 0, img="hero-right")
     if key == 'UP':
-        hero.move(y=-1 if y > 0 else 0, img="hero-up")
+        hero.moveHero(y=-1 if y > 0 else 0, img="hero-up")
     if key == 'DOWN':
-        hero.move(y=1 if y < 9 else 0, img="hero-down")
+        hero.moveHero(y=1 if y < 9 else 0, img="hero-down")
 
 
 root.bind('<Left>', lambda event: keyPress('LEFT'))
@@ -71,11 +69,14 @@ root.bind('<Down>', lambda event: keyPress('DOWN'))
 # Don't write anything after this while loop, because that won't be executed
 # The main game loop, at the moment it calls the draw_screen function continuously
 
+
 while True:
     draw_tiles()
-    # draw_screen()
     root.update_idletasks()
-    # skeleton.moveSkeletons()
+
+    time.sleep(1)
+
+    skeletonMain.moveSkeletons()
     root.update()
 
     # if x is moving and it hit wall, it should move y
