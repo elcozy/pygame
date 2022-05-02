@@ -18,8 +18,10 @@ class MapTiles:
         self.IMG_SIZE = IMG_SIZE
         self.filePath = filePath
 
-        self.tileOpen = PhotoImage(file=f"{self.filePath}floor.png")
-        self.tileBlock = PhotoImage(file=f"{self.filePath}wall.png")
+        self.tileOpen = PhotoImage(
+            file=f"{self.filePath}floor.png")
+        self.tileBlock = PhotoImage(
+            file=f"{self.filePath}wall.png")
 
     def drawTiles(self, canva):
         tileRow = 0
