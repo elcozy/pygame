@@ -1,12 +1,13 @@
 import time
 from tkinter import *
 from hero import Hero
-from skeleton import Skeletons
+from characters import Skeletons
 from boss import Boss
+from skel import Skel
 from maps import MapTiles
 from random import randint
 from game_layout import GameLayout
-
+from gameStats import Stats
 
 # statics
 
@@ -17,21 +18,27 @@ FILEPATH = 'assets/img/'
 
 root = Tk()
 root.title('Wanderer Game')
-canvas = Canvas(root, width=WIDTH, height=HEIGHT + 50, bg='white')
+canvas = Canvas(root, width=WIDTH, height=HEIGHT + 150, bg='white')
 canvas.pack()
 
-hero = Hero(FILEPATH)
-skeletonMain = Skeletons(IMG_SIZE, FILEPATH, hero)
-# boss = Boss()
-heroHealth = hero.herosHealth()
-gamelayout = GameLayout(hero, heroHealth, IMG_SIZE)
-mapTiles = MapTiles(FILEPATH, IMG_SIZE)
+hero = Hero()
+skeletonMain = Skeletons(hero)
 
+boss = Boss(skeletonMain)
+boss.createEnemies(canvas)
+
+skel = Skel(skeletonMain)
+skel.createEnemies(canvas)
+
+gamelayout = GameLayout(skeletonMain, hero, IMG_SIZE)
+mapTiles = MapTiles(FILEPATH, IMG_SIZE)
+stats = Stats()
 # This method is called continuously by the main game loop
+print(skeletonMain.skeletons)
 
 
 def gameStatus():
-    if hero.HP < 1:
+    if hero.HERO_HP < 1:
         print('Game over')
         return 'Hero Killed'
 
@@ -41,29 +48,33 @@ def draw_tiles():
     canvas.create_rectangle(0, 0, WIDTH, HEIGHT + 10, fill='green')
     mapTiles.drawTiles(canvas)
 
-    if gameStatus() != 'Hero Killed':
-        skeletonMain.createEnemies(canvas)
-    gamelayout.createInfo(canvas,  WIDTH, HEIGHT)
-    if skeletonMain.strikeHero() != '':
-        gamelayout.createInfoEnemy(
-            canvas,  WIDTH, HEIGHT, skeletonMain.strikeHero())
+    # if gameStatus() == 'Hero Killed':
+    #     stats.gameOver()
+    # if gameStatus() != 'Hero Killed':
+    skeletonMain.createEnemies(canvas)
     hero.createHero(canvas, IMG_SIZE)
+    gamelayout.createInfo(canvas,  WIDTH, HEIGHT)
+
+    enemyStat = skeletonMain.allCharacters
+    charPos = HEIGHT + 20
+    for char in enemyStat:
+        canvas.create_text(500, charPos,  fill="green", font="Times 20 italic bold",
+                           text=f'{char["character"]} : HP: {char["hp"]}/10 __  Pos: {char["position"]} ')
+        charPos += 20
+
+    if skeletonMain.skeletonStrike != '':
+        gamelayout.createInfoEnemy(
+            canvas,  WIDTH, HEIGHT, skeletonMain.skeletonStrike)
     # gameStatus()
 
-
-# skeleton.checkPosition()
-# boss.checkPosition()
-# Binding keyboard key events to functions
-
-
-# def dontMove():
 
 def keyPress(key):
     x = hero.hero_position[0]
     y = hero.hero_position[1]
+    print(skeletonMain.allCharacters, skeletonMain.skeletons, 'skeletons')
+
     if key != 'SPACE' and hero.moveTime == 2:
         skeletonMain.moveSkeletons()
-
     if key == 'LEFT':
         hero.moveHero(img="hero-left", x=-1 if x > 0 else 0)
     if key == 'RIGHT':
@@ -93,6 +104,7 @@ while True:
     # time.sleep(1)
 
     skeletonMain.strikeHero()
+    skeletonMain.updateSkeletons()
     # skeletonMain.moveSkeletons()
     root.update()
 

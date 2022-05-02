@@ -1,8 +1,8 @@
-import random
+from random import randint
 
 
 class Random():
 
     @staticmethod
     def randomInt():
-        return random.randint(0, 9)
+        return randint(0, 9)
