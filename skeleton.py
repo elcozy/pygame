@@ -14,9 +14,9 @@ FILEPATH = 'assets/img/'
 
 
 class SkelHealthDefault():
-    def __init__(self, characters='None'):
+    def __init__(self, level, characters='None'):
         self.characters = characters
-        self.level = 1
+        self.level = level
         self.SKELETON_HP = (2 * self.level) * randint(1, 6)
         self.SKELETON_DP = (self.level / 2) * randint(1, 6)
         self.SKELETON_SP = self.level * randint(1, 6)
@@ -25,15 +25,17 @@ class SkelHealthDefault():
         self.enemy = 0
 
 
-class Skel(SkelHealthDefault):
+class Skeleton(SkelHealthDefault):
 
-    def __init__(self, characters):
-        super().__init__(characters)
+    def __init__(self, level, characters):
+        super().__init__(level, characters)
         self.skelCreated = False
         self.enemiesNeeded = self.characters.enemiesNeeded
 
     def createEnemies(self, canva):
         # Generating Random number from 0 - 10
+        print(self.level, self.SKELETON_HP, 'dshp')
+
         xRand = sample(range(0, 10), 10)
         while self.enemy < self.enemiesNeeded:
             # Assigning to variables here

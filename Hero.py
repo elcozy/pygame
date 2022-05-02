@@ -1,15 +1,14 @@
 from maps import tiles
 from random import randint
 from tkinter import *
-from characters import Skeletons
 from default import HeroHealthDefault, FILEPATH
 
 
 class Hero(HeroHealthDefault):
-    def __init__(self):
+    def __init__(self, level=1):
         super().__init__()
+        self.level = level
         self.hero_position = [0, 0]
-        self.level = 1
         self.moveTime = 1
         self.heroStrike = ''
         self.heroChar = {
@@ -18,7 +17,6 @@ class Hero(HeroHealthDefault):
             'hp': self.HERO_HP,
             'dp': self.HERO_DP,
             'sp': self.HERO_SP,
-            'level': self.level
         }
 
     def createHero(self, canva, IMG_SIZE):
@@ -50,18 +48,9 @@ class Hero(HeroHealthDefault):
             self.moveTime = 1
 
     def strikeEnemy(self, skeleton):
-        print("Striking enemy")
-
-        if self.hero_position in skeleton.skeletons:
-            self.heroStrike = skeleton.skeletons.index(self.hero_position)
-            print(self.heroStrike, 'enemy index',
-                  skeleton.allCharacters[self.heroStrike])
-        else:
-            self.heroStrike = ''
-
         for i, character in enumerate(skeleton.allCharacters):
             if character["position"] == self.hero_position:
-                character['hp'] = character['hp'] - 5
-
-        # if self.heroStrike != '':
-        #     skeleton.allCharacters[self.heroStrike]['hp'] = skeleton.allCharacters[self.heroStrike]['hp'] - 5
+                if character['hp'] > 0:
+                    character['hp'] = character['hp'] - 5
+                else:
+                    character['hp'] = 0

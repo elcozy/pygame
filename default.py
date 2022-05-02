@@ -6,24 +6,15 @@ FILEPATH = 'assets/img/'
 
 
 class HeroHealthDefault():
-    def __init__(self, level=1):
-        self.level = level
+    def __init__(self):
         self.img = "hero-down"
-        self.HERO_HP = 20 + 3 * randint(1, 6)
+        self._HERO_HPCALC = 20 + 3 * randint(1, 6)
+        self.HERO_HP = self._HERO_HPCALC
+        self.MAXHERO_HP = self._HERO_HPCALC
         self.HERO_DP = 2 * randint(1, 6)
         self.HERO_SP = 5 + randint(1, 6)
         self.heroface = PhotoImage(
             file=f"{FILEPATH}{self.img}.png")
-
-    def __getitem__(self):
-        return {
-            "character": f"Hero",
-            # "position": position,
-            'level': self.level,
-            'hp': self.HERO_HP,
-            'dp': self.HERO_DP,
-            'sp': self.HERO_SP
-        }
 
 
 class SkeletonHealthDefault():

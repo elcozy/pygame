@@ -16,7 +16,7 @@ FILEPATH = 'assets/img/'
 
 
 class CharactersHealthDefault():
-    def __init__(self):
+    def __init__(self, level=1):
         self.level = 1
         self.SKELETON_HP = (2 * self.level) * randint(1, 6)
         self.SKELETON_DP = (self.level / 2) * randint(1, 6)
@@ -29,19 +29,23 @@ class CharactersHealthDefault():
             file=f"{FILEPATH}skeleton.png")
 
 
-class Skeletons(CharactersHealthDefault):
+class CharacterMain(CharactersHealthDefault):
     last_move_time = time.time()
 
-    def __init__(self, hero=None, skeletonsNeeded=3):
-        super().__init__()
+    def __init__(self, hero=None, level=1, stats='None', skeletonsNeeded=3):
+        super().__init__(level)
+
+        self.stats = stats
         self.hero = hero
         self.skeletons = []
         self.allCharacters = []
         self.enemy = 1
         self.enemiesNeeded = skeletonsNeeded
         self.skeletonStrike = ''
+        self.keyRandom = randint(0, self.enemiesNeeded - 1)
 
     def setEnemy(self, character, position, enemyCount=1):
+        key = TRUE if enemyCount == self.keyRandom else FALSE
         if character == 'boss':
             return {
                 "character": "Boss",
@@ -56,7 +60,7 @@ class Skeletons(CharactersHealthDefault):
             return {
                 "character": f"{character}{enemyCount}",
                 'direction': 'forward',
-                'key': FALSE,
+                'key': key,
                 "position": position,
                 'hp': self.SKELETON_HP,
                 'dp': self.SKELETON_DP,
@@ -73,13 +77,9 @@ class Skeletons(CharactersHealthDefault):
         for i in range(len(self.allCharacters)):
             x = self.allCharacters[i]['position'][0] * IMG_SIZE
             y = self.allCharacters[i]['position'][1] * IMG_SIZE
+
             if self.allCharacters[i]['hp'] > 0:
                 character = self.allCharacters[i]['character']
-                # if self.allCharacters[i]['character'] == "Skeleton":
-                #     canva.create_image(
-                #         x, y, image=self.skeletonImage, anchor=NW)
-                # if self.allCharacters[i]['character'] == "Boss":
-                #     canva.create_image(x, y, image=self.boss_img, anchor=NW)
                 canva.create_image(x, y, image=self.boss_img if character ==
                                    'Boss' else self.skeletonImage, anchor=NW)
 
@@ -143,6 +143,22 @@ class Skeletons(CharactersHealthDefault):
                 self.skeletons.append(
                     z['position'])
 
+            # if len(self.skeletons) == 0:
+
+    def levelUp(self):
+
+        if self.hero.HERO_DP < 1:
+            self.stats.heroKilled = True
+
+        for i, character in enumerate(self.allCharacters):
+            if character['key'] == 1:
+                keyHolder = i
+            if character['character'] == "Boss":
+                boss = i
+        if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[keyHolder]['hp'] < 1:
+            self.stats.levelUp()
+            self.stats.levelComplete = True
+
     def strikeHero(self):
         heroArr = self.hero.hero_position
 
@@ -157,7 +173,7 @@ class Skeletons(CharactersHealthDefault):
 
         if self.skeletonStrike != '':
             self.skeletonStrike = self.skeletons.index(heroArr)
-            self.hero.heroChar['hp'] = self.hero.heroChar['hp'] - 1
+            self.hero.heroChar['hp'] = self.hero.heroChar['hp'] - 3
 
             if self.allCharacters[self.skeletonStrike]["key"]:
                 print(

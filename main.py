@@ -1,9 +1,9 @@
 import time
 from tkinter import *
 from hero import Hero
-from characters import Skeletons
+from characters import CharacterMain
 from boss import Boss
-from skel import Skel
+from skeleton import Skeleton
 from maps import MapTiles
 from random import randint
 from game_layout import GameLayout
@@ -21,20 +21,25 @@ root.title('Wanderer Game')
 canvas = Canvas(root, width=WIDTH, height=HEIGHT + 150, bg='white')
 canvas.pack()
 
-hero = Hero()
-skeletonMain = Skeletons(hero)
 
-boss = Boss(skeletonMain)
-boss.createEnemies(canvas)
+stats = Stats()
 
-skel = Skel(skeletonMain)
+hero = Hero(stats.level)
+
+characterMain = CharacterMain(hero, stats.level, stats)
+
+skel = Skeleton(stats.level, characterMain)
 skel.createEnemies(canvas)
 
-gamelayout = GameLayout(skeletonMain, hero, IMG_SIZE)
+boss = Boss(stats.level, characterMain)
+boss.createEnemies(canvas)
+
+
+gamelayout = GameLayout(characterMain, hero, IMG_SIZE, stats)
+
 mapTiles = MapTiles(FILEPATH, IMG_SIZE)
-stats = Stats()
 # This method is called continuously by the main game loop
-print(skeletonMain.skeletons)
+print(characterMain.skeletons)
 
 
 def gameStatus():
@@ -44,6 +49,7 @@ def gameStatus():
 
 
 def draw_tiles():
+    # print(level)
     canvas.delete("all")
     canvas.create_rectangle(0, 0, WIDTH, HEIGHT + 10, fill='green')
     mapTiles.drawTiles(canvas)
@@ -51,30 +57,49 @@ def draw_tiles():
     # if gameStatus() == 'Hero Killed':
     #     stats.gameOver()
     # if gameStatus() != 'Hero Killed':
-    skeletonMain.createEnemies(canvas)
+    characterMain.createEnemies(canvas)
     hero.createHero(canvas, IMG_SIZE)
     gamelayout.createInfo(canvas,  WIDTH, HEIGHT)
+    canvas.create_text(50, HEIGHT + 70,  fill="red", font="Times 20 italic bold",
+                       text=f'Level {stats.level}')
 
-    enemyStat = skeletonMain.allCharacters
+    enemyStat = characterMain.allCharacters
     charPos = HEIGHT + 20
     for char in enemyStat:
-        canvas.create_text(500, charPos,  fill="green", font="Times 20 italic bold",
-                           text=f'{char["character"]} : HP: {char["hp"]}/10 __  Pos: {char["position"]} ')
+        key = "KEY" if char["key"] == 1 else ""
+        canvas.create_text(550, charPos,  fill="green", font="Times 20 italic bold",
+                           text=f'{char["character"]} : HP: {char["hp"]}  __  Pos: {char["position"]} {key}')
         charPos += 20
 
-    if skeletonMain.skeletonStrike != '':
+    if stats.levelComplete == True:
+        characterMain.allCharacters = []
+        Skeleton(stats.level, characterMain).createEnemies(canvas)
+        Boss(stats.level, characterMain).createEnemies(canvas)
+        stats.levelComplete = False
+        print('next level', stats.level)
+
+    # if hero.hero_position == [-1, -1]:
+    if stats.heroKilled == True:
+        Hero(stats.level).createHero(canvas, IMG_SIZE)
+        # hero = 'a'
+        characterMain.allCharacters = []
+        Skeleton(stats.level, characterMain).createEnemies(canvas)
+        Boss(stats.level, characterMain).createEnemies(canvas)
+        stats.heroKilled = False
+
+    if characterMain.skeletonStrike != '':
+
         gamelayout.createInfoEnemy(
-            canvas,  WIDTH, HEIGHT, skeletonMain.skeletonStrike)
+            canvas,  WIDTH, HEIGHT, characterMain.skeletonStrike)
     # gameStatus()
 
 
 def keyPress(key):
     x = hero.hero_position[0]
     y = hero.hero_position[1]
-    print(skeletonMain.allCharacters, skeletonMain.skeletons, 'skeletons')
-
+    print(len(characterMain.skeletons), 'xx', 'level :', stats.level)
     if key != 'SPACE' and hero.moveTime == 2:
-        skeletonMain.moveSkeletons()
+        characterMain.moveSkeletons()
     if key == 'LEFT':
         hero.moveHero(img="hero-left", x=-1 if x > 0 else 0)
     if key == 'RIGHT':
@@ -84,7 +109,7 @@ def keyPress(key):
     if key == 'DOWN':
         hero.moveHero(img="hero-down", y=1 if y < 9 else 0)
     if key == 'SPACE':
-        hero.strikeEnemy(skeletonMain)
+        hero.strikeEnemy(characterMain)
 
 
 root.bind('<Left>', lambda event: keyPress('LEFT'))
@@ -103,9 +128,10 @@ while True:
 
     # time.sleep(1)
 
-    skeletonMain.strikeHero()
-    skeletonMain.updateSkeletons()
-    # skeletonMain.moveSkeletons()
+    characterMain.strikeHero()
+    characterMain.updateSkeletons()
+    characterMain.levelUp()
+    # characterMain.moveSkeletons()
     root.update()
 
     # if x is moving and it hit wall, it should move y

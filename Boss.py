@@ -8,19 +8,20 @@ FILEPATH = default.FILEPATH
 
 
 class BossHealthDefault():
-    def __init__(self, characters='None'):
+    def __init__(self, level, characters='None'):
         self.characters = characters
-        self.level = 1
+        self.level = level
         self.BOSS_HP = (2 * self.level) * (randint(1, 6) + randint(1, 6))
-        self.BOSS_DP = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
+        self.BOSS_DP = (self.level / 2) * \
+            (randint(1, 6) + (randint(1, 6) / 2))
         self.BOSS_SP = self.level * randint(1, 6) + self.level
         self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
 
 
 class Boss(BossHealthDefault):
 
-    def __init__(self, characters):
-        super().__init__(characters)
+    def __init__(self, level, characters):
+        super().__init__(level, characters)
         self.bossCreated = False
 
     def createEnemies(self, canva):
