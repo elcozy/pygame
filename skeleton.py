@@ -2,39 +2,39 @@ from time import time, sleep
 from random import randint, sample, random
 import numpy as np
 from tkinter import *
-from random_character import Random
 from maps import tiles
+from default import SkeletonHealthDefault, FILEPATH
 # import main
 
 layoutArray = tiles
 
-FILEPATH = 'assets/img/'
+# FILEPATH = 'assets/img/'
 
 # characters = main.characters
 
 
 class SkelHealthDefault():
-    def __init__(self, level, characters='None'):
-        self.characters = characters
+    def __init__(self, level):
         self.level = level
-        self.SKELETON_HP = (2 * self.level) * randint(1, 6)
-        self.SKELETON_DP = (self.level / 2) * randint(1, 6)
-        self.SKELETON_SP = self.level * randint(1, 6)
-        self.skeletonImage = PhotoImage(
+        self.skeleton_hp = (2 * self.level) * randint(1, 6)
+        self.skeleton_dp = (self.level / 2) * randint(1, 6)
+        self.skeleton_sp = self.level * randint(1, 6)
+        self.skeleton_image = PhotoImage(
             file=f"{FILEPATH}skeleton.png")
-        self.enemy = 0
 
 
-class Skeleton(SkelHealthDefault):
+class Skeleton(SkeletonHealthDefault):
 
-    def __init__(self, level, characters):
-        super().__init__(level, characters)
+    def __init__(self, level, characters='None'):
+        super().__init__(level)
+        self.characters = characters
         self.skelCreated = False
+        self.enemy = 0
         self.enemiesNeeded = self.characters.enemiesNeeded
 
-    def createEnemies(self, canva):
-        # Generating Random number from 0 - 10
-        print(self.level, self.SKELETON_HP, 'dshp')
+    def create_enemies(self):
+        # Generating random number from 0 - 10
+        print(self.level, self.skeleton_hp, 'dshp')
 
         xRand = sample(range(0, 10), 10)
         while self.enemy < self.enemiesNeeded:

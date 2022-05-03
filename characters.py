@@ -2,7 +2,6 @@
 from random import randint, sample, random
 import numpy as np
 from tkinter import *
-from random_character import Random
 from maps import tiles
 import time
 from default import SkeletonHealthDefault, BossHealthDefault
@@ -18,14 +17,14 @@ FILEPATH = 'assets/img/'
 class CharactersHealthDefault():
     def __init__(self, level=1):
         self.level = 1
-        self.SKELETON_HP = (2 * self.level) * randint(1, 6)
-        self.SKELETON_DP = (self.level / 2) * randint(1, 6)
-        self.SKELETON_SP = self.level * randint(1, 6)
-        self.BOSS_HP = (2 * self.level) * (randint(1, 6) + randint(1, 6))
-        self.BOSS_DP = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
-        self.BOSS_SP = self.level * randint(1, 6) + self.level
+        self.skeleton_hp = (2 * self.level) * randint(1, 6)
+        self.skeleton_dp = (self.level / 2) * randint(1, 6)
+        self.skeleton_sp = self.level * randint(1, 6)
+        self.boss_hp = (2 * self.level) * (randint(1, 6) + randint(1, 6))
+        self.boss_dp = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
+        self.boss_sp = self.level * randint(1, 6) + self.level
         self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
-        self.skeletonImage = PhotoImage(
+        self.skeleton_image = PhotoImage(
             file=f"{FILEPATH}skeleton.png")
 
 
@@ -52,9 +51,9 @@ class CharacterMain(CharactersHealthDefault):
                 'direction': 'forward',
                 "position": position,
                 'key': FALSE,
-                'hp': self.BOSS_HP,
-                'dp': self.BOSS_DP,
-                'sp': self.BOSS_SP
+                'hp': self.boss_hp,
+                'dp': self.boss_dp,
+                'sp': self.boss_sp
             }
         if character == 'skeleton':
             return {
@@ -62,9 +61,9 @@ class CharacterMain(CharactersHealthDefault):
                 'direction': 'forward',
                 'key': key,
                 "position": position,
-                'hp': self.SKELETON_HP,
-                'dp': self.SKELETON_DP,
-                'sp': self.SKELETON_SP
+                'hp': self.skeleton_hp,
+                'dp': self.skeleton_dp,
+                'sp': self.skeleton_sp
             }
         else:
             print("No enemy here")
@@ -81,7 +80,7 @@ class CharacterMain(CharactersHealthDefault):
             if self.allCharacters[i]['hp'] > 0:
                 character = self.allCharacters[i]['character']
                 canva.create_image(x, y, image=self.boss_img if character ==
-                                   'Boss' else self.skeletonImage, anchor=NW)
+                                   'Boss' else self.skeleton_image, anchor=NW)
 
     def moveSkeletons(self):
 
@@ -147,17 +146,20 @@ class CharacterMain(CharactersHealthDefault):
 
     def levelUp(self):
 
-        if self.hero.HERO_DP < 1:
-            self.stats.heroKilled = True
+        if self.hero.hero_dp < 1:
+            self.stats.hero_killed = True
 
-        for i, character in enumerate(self.allCharacters):
-            if character['key'] == 1:
-                keyHolder = i
-            if character['character'] == "Boss":
-                boss = i
-        if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[keyHolder]['hp'] < 1:
-            self.stats.levelUp()
-            self.stats.levelComplete = True
+        if len(self.allCharacters) > 0:
+            for i, character in enumerate(self.allCharacters):
+                if character['key'] == 1:
+                    keyHolder = i
+                if character['character'] == "Boss":
+                    boss = i
+
+            if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[keyHolder]['hp'] < 1:
+                print('boss and key holder killed')
+                self.stats.levelUp()
+                self.stats.level_complete = True
 
     def strikeHero(self):
         heroArr = self.hero.hero_position
@@ -173,7 +175,7 @@ class CharacterMain(CharactersHealthDefault):
 
         if self.skeletonStrike != '':
             self.skeletonStrike = self.skeletons.index(heroArr)
-            self.hero.heroChar['hp'] = self.hero.heroChar['hp'] - 3
+            self.hero.hero_hp = self.hero.hero_hp - 3
 
             if self.allCharacters[self.skeletonStrike]["key"]:
                 print(

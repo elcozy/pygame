@@ -11,19 +11,12 @@ class Hero(HeroHealthDefault):
         self.hero_position = [0, 0]
         self.moveTime = 1
         self.heroStrike = ''
-        self.heroChar = {
-            "character": "Hero",
-            "position": self.hero_position,
-            'hp': self.HERO_HP,
-            'dp': self.HERO_DP,
-            'sp': self.HERO_SP,
-        }
 
     def createHero(self, canva, IMG_SIZE):
         x = self.hero_position[0] * IMG_SIZE
         y = self.hero_position[1] * IMG_SIZE
 
-        if self.heroChar['hp'] > 0:
+        if self.hero_hp > 0:
             canva.create_image(
                 x, y, image=self.heroface, anchor=NW)
         else:

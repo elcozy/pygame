@@ -1,57 +1,61 @@
-import random
 from random import randint
-from tkinter import *
+from tkinter import PhotoImage
 
 FILEPATH = 'assets/img/'
 
 
 class HeroHealthDefault():
+    """Default stats for the Hero"""
+
     def __init__(self):
         self.img = "hero-down"
-        self._HERO_HPCALC = 20 + 3 * randint(1, 6)
-        self.HERO_HP = self._HERO_HPCALC
-        self.MAXHERO_HP = self._HERO_HPCALC
-        self.HERO_DP = 2 * randint(1, 6)
-        self.HERO_SP = 5 + randint(1, 6)
+        self._hero_hp_calc = 20 + 3 * randint(1, 6)
+        self.hero_hp = self._hero_hp_calc
+        self.max_hero_hp = self._hero_hp_calc
+        self.hero_dp = 2 * randint(1, 6)
+        self.hero_sp = 5 + randint(1, 6)
         self.heroface = PhotoImage(
             file=f"{FILEPATH}{self.img}.png")
 
 
 class SkeletonHealthDefault():
+    """Default stats for the Skeleton"""
+
     def __init__(self, level=1):
         self.level = level
-        self.SKELETON_HP = (2 * self.level) * randint(1, 6)
-        self.SKELETON_DP = (self.level / 2) * randint(1, 6)
-        self.SKELETON_SP = self.level * randint(1, 6)
-        self.skeletonImage = PhotoImage(
+        self.skeleton_hp = (2 * self.level) * randint(1, 6)
+        self.skeleton_dp = (self.level / 2) * randint(1, 6)
+        self.skeleton_sp = self.level * randint(1, 6)
+        self.skeleton_image = PhotoImage(
             file=f"{FILEPATH}skeleton.png")
 
     def __getitem__(self):
         return {
-            # "character": f"{character}{enemyCount}",
             'direction': 'forward',
-            'key': FALSE,
-            # "position": position,
-            'hp': self.SKELETON_HP,
-            'dp': self.SKELETON_DP,
-            'sp': self.SKELETON_SP
+            'key': False,
+            'hp': self.skeleton_hp,
+            'dp': self.skeleton_dp,
+            'sp': self.skeleton_sp
         }
 
 
 class BossHealthDefault():
+    """Default stats for the Boss"""
+
     def __init__(self, level=1):
         self.level = level
-        self.BOSS_HP = (2 * self.level) * (randint(1, 6) + randint(1, 6))
-        self.BOSS_DP = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
-        self.BOSS_SP = self.level * randint(1, 6) + self.level
+        self.boss_hp = (2 * self.level) * (randint(1, 6) + randint(1, 6))
+        self.boss_dp = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
+        self.boss_sp = self.level * randint(1, 6) + self.level
         self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
 
-    def __getitem__(self):
-        return {"character": f"Boss",
+    def get_dict_boss(self):
+        """Get the dict for boss"""
+
+        return {"character": "Boss",
                 'direction': 'forward',
-                # "position": position,
-                'key': FALSE,
-                'hp': self.BOSS_HP,
-                'dp': self.BOSS_DP,
-                'sp': self.BOSS_SP
+                'key': False,
+                'hp': self.boss_hp,
+                'dp': self.boss_dp,
+                'sp': self.boss_sp
                 }
