@@ -1,72 +1,36 @@
 
 from random import randint, sample, random
+import time
 import numpy as np
 from tkinter import *
-from maps import tiles
-import time
+# from maps import MapTiles
 from default import SkeletonHealthDefault, BossHealthDefault
-import constants
+import game_constants
 
-layoutArray = tiles
+# self.tiles = MapTiles().tiles
 
-IMG_SIZE = constants.IMG_SIZE
+IMG_SIZE = game_constants.IMG_SIZE
 
 FILEPATH = 'assets/img/'
 
 
-class CharactersHealthDefault():
-    def __init__(self, level=1):
-        self.level = 1
-        self.skeleton_hp = (2 * self.level) * randint(1, 6)
-        self.skeleton_dp = (self.level / 2) * randint(1, 6)
-        self.skeleton_sp = self.level * randint(1, 6)
-        self.boss_hp = (2 * self.level) * (randint(1, 6) + randint(1, 6))
-        self.boss_dp = (self.level / 2) * (randint(1, 6) + (randint(1, 6) / 2))
-        self.boss_sp = self.level * randint(1, 6) + self.level
-        self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
-        self.skeleton_image = PhotoImage(
-            file=f"{FILEPATH}skeleton.png")
-
-
-class CharacterMain(CharactersHealthDefault):
+class CharacterMain():
     last_move_time = time.time()
 
-    def __init__(self, hero=None, level=1, stats='None', skeletonsNeeded=3):
-        super().__init__(level)
+    def __init__(self, hero=None, level=1, stats='None', tiles=None, skeletonsNeeded=3):
 
         self.stats = stats
         self.hero = hero
+        self.tiles = tiles
         self.skeletons = []
         self.allCharacters = []
         self.enemy = 1
         self.enemiesNeeded = skeletonsNeeded
         self.skeletonStrike = ''
         self.keyRandom = randint(0, self.enemiesNeeded - 1)
-
-    def setEnemy(self, character, position, enemyCount=1):
-        key = TRUE if enemyCount == self.keyRandom else FALSE
-        if character == 'boss':
-            return {
-                "character": "Boss",
-                'direction': 'forward',
-                "position": position,
-                'key': FALSE,
-                'hp': self.boss_hp,
-                'dp': self.boss_dp,
-                'sp': self.boss_sp
-            }
-        if character == 'skeleton':
-            return {
-                "character": f"{character}{enemyCount}",
-                'direction': 'forward',
-                'key': key,
-                "position": position,
-                'hp': self.skeleton_hp,
-                'dp': self.skeleton_dp,
-                'sp': self.skeleton_sp
-            }
-        else:
-            print("No enemy here")
+        self.skeleton_image = PhotoImage(
+            file=f"{FILEPATH}skeleton.png")
+        self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
 
     def setCharacter(self, character):
         self.allCharacters.append(character)
@@ -79,7 +43,7 @@ class CharacterMain(CharactersHealthDefault):
 
             if self.allCharacters[i]['hp'] > 0:
                 character = self.allCharacters[i]['character']
-                canva.create_image(x, y, image=self.boss_img if character ==
+                canva.create_image(x, y, image=self.boss_img if character is
                                    'Boss' else self.skeleton_image, anchor=NW)
 
     def moveSkeletons(self):
@@ -93,41 +57,41 @@ class CharacterMain(CharactersHealthDefault):
                 randomPositionsU = ['upward', 'forward', 'backward']
                 randomPositionsD = ['downward', 'forward', 'backward']
 
-                if skelt[b]['direction'] == 'forward':
-                    if skelt[b]['position'][0] < 9 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] == 'o':
+                if skelt[b]['direction'] is 'forward':
+                    if skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o':
                         skelt[b]['position'] = [skelt[b]['position']
                                                 [0] + 1, skelt[b]['position'][1]]
-                        if (skelt[b]['position'][1] < 9 and layoutArray[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] == 'o') or (skelt[b]['position'][1] > 0 and layoutArray[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] == 'o'):
+                        if (skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o') or (skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o'):
                             skelt[b]['direction'] = randomPositions[randint(
                                 0, 2)]
                     else:
                         skelt[b]['direction'] = randomPositions[randint(0, 1)]
 
-                if skelt[b]['direction'] == 'backward':
-                    if skelt[b]['position'][0] > 0 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] == 'o':
+                if skelt[b]['direction'] is 'backward':
+                    if skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o':
                         skelt[b]['position'] = [skelt[b]['position']
                                                 [0] - 1, skelt[b]['position'][1]]
-                        if (skelt[b]['position'][1] < 9 and layoutArray[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] == 'o') or (skelt[b]['position'][1] > 0 and layoutArray[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] == 'o'):
+                        if (skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o') or (skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o'):
                             skelt[b]['direction'] = randomPositionsB[randint(
                                 0, 2)]
                     else:
                         skelt[b]['direction'] = randomPositions[randint(0, 1)]
 
-                if skelt[b]['direction'] == 'downward':
-                    if skelt[b]['position'][1] < 9 and layoutArray[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] == 'o':
+                if skelt[b]['direction'] is 'downward':
+                    if skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o':
                         skelt[b]['position'] = [skelt[b]['position']
                                                 [0], skelt[b]['position'][1] + 1]
-                        if (skelt[b]['position'][0] < 9 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] == 'o') or (skelt[b]['position'][0] > 0 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] == 'o'):
+                        if (skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o') or (skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o'):
                             skelt[b]['direction'] = randomPositions[randint(
                                 1, 3)]
                     else:
                         skelt[b]['direction'] = randomPositions[randint(2, 3)]
 
-                if skelt[b]['direction'] == 'upward':
-                    if skelt[b]['position'][1] > 0 and layoutArray[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] == 'o':
+                if skelt[b]['direction'] is 'upward':
+                    if skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o':
                         skelt[b]['position'] = [skelt[b]['position']
                                                 [0], skelt[b]['position'][1] - 1]
-                        if (skelt[b]['position'][0] < 9 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] == 'o') or (skelt[b]['position'][0] > 0 and layoutArray[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] == 'o'):
+                        if (skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o') or (skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o'):
                             skelt[b]['direction'] = randomPositionsU[randint(
                                 0, 2)]
                     else:
@@ -142,21 +106,20 @@ class CharacterMain(CharactersHealthDefault):
                 self.skeletons.append(
                     z['position'])
 
-            # if len(self.skeletons) == 0:
+            # if len(self.skeletons) is 0:
 
     def levelUp(self):
 
         if self.hero.hero_dp < 1:
             self.stats.hero_killed = True
-
         if len(self.allCharacters) > 0:
             for i, character in enumerate(self.allCharacters):
-                if character['key'] == 1:
-                    keyHolder = i
-                if character['character'] == "Boss":
+                if character['key'] is True:
+                    key_holder = i
+                if character['character'] is "Boss":
                     boss = i
 
-            if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[keyHolder]['hp'] < 1:
+            if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[key_holder]['hp'] < 1:
                 print('boss and key holder killed')
                 self.stats.levelUp()
                 self.stats.level_complete = True
