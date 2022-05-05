@@ -10,7 +10,7 @@ from skeleton import Skeleton
 from maps import MapTiles
 from game_stats import Stats
 from game_layout import GameLayout
-
+from laser import Laser
 
 tk = Tk()
 tk.title('Wanderer Game')
@@ -37,6 +37,8 @@ SKELETON_INSTANCE.create_enemies()
 
 GAME_LAYOUT = GameLayout(CHARACTER_MAIN, HERO, STATS)
 
+# LASER = Laser()
+
 # Th== method == called continuously by the main game loop
 
 
@@ -61,16 +63,24 @@ def draw_canvas():
     CHARACTER_MAIN.create_enemies(canvas)
     HERO.create_hero(canvas)
     GAME_LAYOUT.create_info(canvas, HEIGHT)
-    canvas.create_text(50, HEIGHT + 70,  fill="red", font="Times 20 italic bold",
-                       text=f'Level {STATS.level}')
+    canvas.create_text(
+        50,
+        HEIGHT + 70,
+        fill="red",
+        font="Times 20 italic bold",
+        text=f'Level {STATS.level}')
 
     enemy_stat = CHARACTER_MAIN.all_characters
     char_pos = HEIGHT + 20
     for char in enemy_stat:
         key = "KEY" if char["key"] == 1 else ""
         text = f'{char["character"]} : HP: {char["hp"]}  __  Pos: {char["position"]} {key}'
-        canvas.create_text(550, char_pos,  fill="green", font="Times 20 italic bold",
-                           text=text)
+        canvas.create_text(
+            550,
+            char_pos,
+            fill="green",
+            font="Times 20 italic bold",
+            text=text)
         char_pos += 20
 
     if STATS.level_complete is True:
@@ -79,8 +89,7 @@ def draw_canvas():
         # Skeleton(STATS.level, CHARACTER_MAIN).create_enemies(canvas)
         # Boss(STATS.level, CHARACTER_MAIN).create_enemies(canvas)
         STATS.level_complete = False
-        new_tiles = MAP_TILES.shuffle_tiles()
-        print(new_tiles, "new tiles")
+        # new_tiles = MAP_TILES.shuffle_tiles()
         # MAP_TILES.tiles = new_tiles
         HERO.hero_position = [0, 0]
         HERO.max_hero_hp = HERO.max_hero_hp + randint(1, 6)
@@ -92,10 +101,14 @@ def draw_canvas():
     # if HERO.hero_position == [-1, -1]:
     if STATS.hero_killed is True:
         Hero(STATS.level, TILES).create_hero(canvas)
-        # HERO = 'a'
-        # CHARACTER_MAIN.all_characters = []
-        reset_character()
-        STATS.hero_killed = False
+
+        master = Tk()
+        master.title('Game Over')
+        L = Laser(master)
+        master.mainloop()
+
+        # exec(open('laser.py').read())
+        STATS.hero_life(False)
 
     if CHARACTER_MAIN.skeleton_strike != '':
 
@@ -107,7 +120,6 @@ def key_press(key):
     """Function to be run when a key is pressed"""
     i = HERO.hero_position[0]
     j = HERO.hero_position[1]
-    print(len(CHARACTER_MAIN.skeletons), 'ii', 'level :', STATS.level)
     if key != 'SPACE' and HERO.move_time == 2:
         CHARACTER_MAIN.move_skeletons()
     if key == 'LEFT':
@@ -129,16 +141,13 @@ tk.bind('<Down>', lambda event: key_press('DOWN'))
 tk.bind('<space>', lambda event: key_press('SPACE'))
 
 # Don't write anything after th== while loop, because that won't be executed
-# The main game loop, at the moment it calls the draw_screen function continuously
+# The main game loop, at the moment it calls the draw_screen function
+# continuously
 
 
 while True:
     draw_canvas()
-    # tk.update_idletasks()
-
     CHARACTER_MAIN.strike_hero()
     CHARACTER_MAIN.update_skeletons()
     CHARACTER_MAIN.level_up()
     tk.update()
-
-    # tk.mainloop()

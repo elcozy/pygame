@@ -12,3 +12,7 @@ class Stats():
     def level_up_stats(self):
         """Level up module"""
         self.level = self.level + 1
+
+    def hero_life(self, life):
+        """Hero Killed"""
+        self.hero_killed = life

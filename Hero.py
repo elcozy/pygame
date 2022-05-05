@@ -28,7 +28,6 @@ class Hero(HeroHealthDefault):
 
     def move_hero(self, img, i=0, j=0):
         """Moving the Hero"""
-        print('hiii,', i, j)
         self.img = img
         self.heroface = PhotoImage(
             file=f"{FILEPATH}{img}.png")
@@ -50,7 +49,6 @@ class Hero(HeroHealthDefault):
         """Enemy strike method"""
 
         for character in (skeleton.all_characters):
-            print(character, 'character')
             if character["position"] == self.hero_position:
                 if character['hp'] > 0:
                     character['hp'] = character['hp'] - 5

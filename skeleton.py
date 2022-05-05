@@ -17,14 +17,12 @@ class Skeleton(SkeletonHealthDefault):
 
     def create_enemies(self):
         """Creating skeleton enemies"""
-        # Generating random number from 0 - 10
-        key = True if self.enemy == self.random_key else False
-        print(key)
+
         random_range_sample = sample(range(0, 10), 10)
 
         while self.enemy < self.enemies_needed:
             key = True if self.enemy == self.random_key else False
-            print(key)
+
             # Assigning to variables here
             random_skeleton_position = [
                 random_range_sample[self.enemy], randint(0, 9)]

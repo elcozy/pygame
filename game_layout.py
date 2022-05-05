@@ -1,5 +1,3 @@
-# from Layout import *
-# from tkinter import *
 
 
 class GameLayout():
@@ -11,13 +9,14 @@ class GameLayout():
         self.max_skeleton_hp = 0
 
     def create_info(self, canva, bottom):
+        """Cretaing hero for hero"""
         hero_stat = self.hero
         level = self.stats.level
         canva.create_text(180, bottom + 20,  fill="darkblue", font="Times 20 italic bold",
                           text=f'Hero (Level {level}) HP: {hero_stat.hero_hp}/{hero_stat.max_hero_hp} | DP: {hero_stat.hero_dp} | SP: {hero_stat.hero_sp}')
-        # print('My health == here')
 
     def create_info_enemy(self, canva, bottom, char):
+        """Creating info for ememies"""
         self.max_skeleton_hp = self.skeletons.all_characters[char]['hp']
 
         enemy_stat = self.skeletons.all_characters[char]
