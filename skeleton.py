@@ -1,3 +1,5 @@
+"""Skeleton module"""
+
 from random import randint, sample
 from default import SkeletonHealthDefault
 
@@ -10,18 +12,18 @@ class Skeleton(SkeletonHealthDefault):
         self.characters = characters
         self.tiles = tiles
         self.enemy = 0
-        self.enemies_needed = self.characters.enemiesNeeded
-        self.random_key = randint(0, self.characters.enemiesNeeded - 1)
+        self.enemies_needed = self.characters.enemies_needed
+        self.random_key = randint(0, self.characters.enemies_needed - 1)
 
     def create_enemies(self):
         """Creating skeleton enemies"""
         # Generating random number from 0 - 10
-        key = True if self.enemy is self.random_key else False
+        key = True if self.enemy == self.random_key else False
         print(key)
         random_range_sample = sample(range(0, 10), 10)
 
         while self.enemy < self.enemies_needed:
-            key = True if self.enemy is self.random_key else False
+            key = True if self.enemy == self.random_key else False
             print(key)
             # Assigning to variables here
             random_skeleton_position = [
@@ -36,11 +38,10 @@ class Skeleton(SkeletonHealthDefault):
                 'dp': self.skeleton_dp,
                 'sp': self.skeleton_sp
             }
-            print(self.tiles, 'tiles in SKel')
             # Creating the enemies here
-            if self.tiles[random_skeleton_position[1]][random_skeleton_position[0]] is 'o':
-                if not (random_skeleton_position[1] is random_skeleton_position[0] is 0):
+            if self.tiles[random_skeleton_position[1]][random_skeleton_position[0]] == 'o':
+                if not random_skeleton_position[1] == random_skeleton_position[0] == 0:
                     # Making sure the enemies don't land in the hero box
                     if not (random_skeleton_position[0] < 3 and random_skeleton_position[1] < 3):
-                        self.characters.setCharacter(skeleton_object)
+                        self.characters.set_character(skeleton_object)
                         self.enemy += 1

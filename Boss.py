@@ -30,7 +30,7 @@ class Boss(BossHealthDefault):
         # Generating random number from 0 - 10
         random_number = randint(0, 9)
 
-        while self.boss_created is False:
+        while self.boss_created == False:
             # Assigning to variables here
             random_arr_boss = [random_number, randint(0, 9)]
             boss_object = {
@@ -42,9 +42,9 @@ class Boss(BossHealthDefault):
                 'dp': self.boss_dp,
                 'sp': self.boss_sp
             }
-            if self.tiles[random_arr_boss[1]][random_arr_boss[0]] is 'o':
-                if not random_arr_boss[1] is random_arr_boss[0] is 0:
+            if self.tiles[random_arr_boss[1]][random_arr_boss[0]] == 'o':
+                if not random_arr_boss[1] == random_arr_boss[0] == 0:
                     # Making sure the enemies don't land in the hero box
                     if not (random_arr_boss[0] < 3 and random_arr_boss[1] < 3):
-                        self.characters.setCharacter(boss_object)
+                        self.characters.set_character(boss_object)
                         self.boss_created = True

@@ -1,145 +1,167 @@
+"""Characters module"""
 
-from random import randint, sample, random
+from random import randint
 import time
-import numpy as np
-from tkinter import *
-# from maps import MapTiles
-from default import SkeletonHealthDefault, BossHealthDefault
-import game_constants
+from tkinter import PhotoImage, NW
+from game_constants import IMG_SIZE
 
 # self.tiles = MapTiles().tiles
 
-IMG_SIZE = game_constants.IMG_SIZE
 
 FILEPATH = 'assets/img/'
 
 
-class CharacterMain():
+class MainCharacter():
+    """The main characters class"""
     last_move_time = time.time()
 
-    def __init__(self, hero=None, level=1, stats='None', tiles=None, skeletonsNeeded=3):
+    def __init__(self, hero=None, stats='None', tiles=None, skeletons_needed=3):
 
         self.stats = stats
         self.hero = hero
         self.tiles = tiles
         self.skeletons = []
-        self.allCharacters = []
+        self.all_characters = []
         self.enemy = 1
-        self.enemiesNeeded = skeletonsNeeded
-        self.skeletonStrike = ''
-        self.keyRandom = randint(0, self.enemiesNeeded - 1)
+        self.enemies_needed = skeletons_needed
+        self.skeleton_strike = ''
+        self.rand_key = randint(0, self.enemies_needed - 1)
         self.skeleton_image = PhotoImage(
             file=f"{FILEPATH}skeleton.png")
         self.boss_img = PhotoImage(file=f"{FILEPATH}boss.png")
 
-    def setCharacter(self, character):
-        self.allCharacters.append(character)
+    def set_character(self, character):
+        """Setter for the characters"""
+        self.all_characters.append(character)
 
-    def createEnemies(self, canva):
+    def create_enemies(self, canva):
+        """Creating the enemies"""
 
-        for i in range(len(self.allCharacters)):
-            x = self.allCharacters[i]['position'][0] * IMG_SIZE
-            y = self.allCharacters[i]['position'][1] * IMG_SIZE
+        # for i, j in enumerate(self.all_characters):
+        for character in self.all_characters:
+            # print(i, j, 'iiii')
+            x_pos = character['position'][0] * IMG_SIZE
+            y_pos = character['position'][1] * IMG_SIZE
 
-            if self.allCharacters[i]['hp'] > 0:
-                character = self.allCharacters[i]['character']
-                canva.create_image(x, y, image=self.boss_img if character is
+            if character['hp'] > 0:
+                character_name = character['character']
+                canva.create_image(x_pos, y_pos, image=self.boss_img if character_name ==
                                    'Boss' else self.skeleton_image, anchor=NW)
 
-    def moveSkeletons(self):
+    def move_skeletons(self):
+        """Moving all skeletons"""
 
-        skelt = self.allCharacters
+        all_character = self.all_characters
 
         if len(self.skeletons) != 0:
-            for b in range(len(skelt)):
-                randomPositions = ['upward', 'downward', 'forward', 'backward']
-                randomPositionsB = ['upward', 'downward', 'backward']
-                randomPositionsU = ['upward', 'forward', 'backward']
-                randomPositionsD = ['downward', 'forward', 'backward']
+            for j in enumerate(all_character):
+                i = j[0]
 
-                if skelt[b]['direction'] is 'forward':
-                    if skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o':
-                        skelt[b]['position'] = [skelt[b]['position']
-                                                [0] + 1, skelt[b]['position'][1]]
-                        if (skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o') or (skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o'):
-                            skelt[b]['direction'] = randomPositions[randint(
+                rand_pos = ['upward', 'downward', 'forward', 'backward']
+                rand_pos_b = ['upward', 'downward', 'backward']
+                rand_pos_u = ['upward', 'forward', 'backward']
+
+                # all_character = self.all_characters
+
+                character_x_pos = all_character[i]['position'][0]
+                character_y_pos = all_character[i]['position'][1]
+
+                x_next_tiles = self.tiles[character_y_pos][character_x_pos + 1]
+                y_next_tiles = self.tiles[character_y_pos + 1][character_x_pos]
+
+                x_prev_tiles = self.tiles[character_y_pos][character_x_pos - 1]
+                y_prev_tiles = self.tiles[character_y_pos - 1][character_x_pos]
+
+                y_pos_valid = character_y_pos < 9 and y_next_tiles == 'o'
+                x_pos_valid = (
+                    character_x_pos < 9 and x_next_tiles == 'o')
+
+                if all_character[i]['direction'] == 'forward':
+                    if character_x_pos < 9 and x_next_tiles == 'o':
+                        all_character[i]['position'] = [
+                            all_character[i]['position'][0] + 1, character_y_pos]
+                        if y_pos_valid or (character_y_pos > 0 and y_prev_tiles == 'o'):
+                            all_character[i]['direction'] = rand_pos[randint(
                                 0, 2)]
                     else:
-                        skelt[b]['direction'] = randomPositions[randint(0, 1)]
+                        all_character[i]['direction'] = rand_pos[randint(0, 1)]
 
-                if skelt[b]['direction'] is 'backward':
-                    if skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o':
-                        skelt[b]['position'] = [skelt[b]['position']
-                                                [0] - 1, skelt[b]['position'][1]]
-                        if (skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o') or (skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o'):
-                            skelt[b]['direction'] = randomPositionsB[randint(
+                if all_character[i]['direction'] == 'backward':
+                    if character_x_pos > 0 and x_prev_tiles == 'o':
+                        all_character[i]['position'] = [
+                            all_character[i]['position'][0] - 1, character_y_pos]
+                        if y_pos_valid or (character_y_pos > 0 and y_prev_tiles == 'o'):
+                            all_character[i]['direction'] = rand_pos_b[randint(
                                 0, 2)]
                     else:
-                        skelt[b]['direction'] = randomPositions[randint(0, 1)]
+                        all_character[i]['direction'] = rand_pos[randint(0, 1)]
 
-                if skelt[b]['direction'] is 'downward':
-                    if skelt[b]['position'][1] < 9 and self.tiles[skelt[b]['position'][1] + 1][skelt[b]['position'][0]] is 'o':
-                        skelt[b]['position'] = [skelt[b]['position']
-                                                [0], skelt[b]['position'][1] + 1]
-                        if (skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o') or (skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o'):
-                            skelt[b]['direction'] = randomPositions[randint(
+                if all_character[i]['direction'] == 'downward':
+                    if character_y_pos < 9 and y_next_tiles == 'o':
+                        all_character[i]['position'] = [
+                            all_character[i]['position'][0], character_y_pos + 1]
+                        if x_pos_valid or (character_x_pos > 0 and x_prev_tiles == 'o'):
+                            all_character[i]['direction'] = rand_pos[randint(
                                 1, 3)]
                     else:
-                        skelt[b]['direction'] = randomPositions[randint(2, 3)]
+                        all_character[i]['direction'] = rand_pos[randint(2, 3)]
 
-                if skelt[b]['direction'] is 'upward':
-                    if skelt[b]['position'][1] > 0 and self.tiles[skelt[b]['position'][1] - 1][skelt[b]['position'][0]] is 'o':
-                        skelt[b]['position'] = [skelt[b]['position']
-                                                [0], skelt[b]['position'][1] - 1]
-                        if (skelt[b]['position'][0] < 9 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] + 1] is 'o') or (skelt[b]['position'][0] > 0 and self.tiles[skelt[b]['position'][1]][skelt[b]['position'][0] - 1] is 'o'):
-                            skelt[b]['direction'] = randomPositionsU[randint(
+                if all_character[i]['direction'] == 'upward':
+                    if character_y_pos > 0 and y_prev_tiles == 'o':
+                        all_character[i]['position'] = [
+                            all_character[i]['position'][0], character_y_pos - 1]
+                        if x_pos_valid or (character_x_pos > 0 and x_prev_tiles == 'o'):
+                            all_character[i]['direction'] = rand_pos_u[randint(
                                 0, 2)]
                     else:
-                        skelt[b]['direction'] = randomPositions[randint(2, 3)]
+                        all_character[i]['direction'] = rand_pos[randint(2, 3)]
 
                 print('-------------')
 
-    def updateSkeletons(self):
+    def update_skeletons(self):
+        """Updating skeletons"""
         self.skeletons = []
-        for z in self.allCharacters:
-            if z['hp'] > 0:
+        for character in self.all_characters:
+            if character['hp'] > 0:
                 self.skeletons.append(
-                    z['position'])
+                    character['position'])
 
-            # if len(self.skeletons) is 0:
+            # if len(self.skeletons) == 0:
 
-    def levelUp(self):
+    def level_up(self):
+        """levelling up"""
 
         if self.hero.hero_dp < 1:
             self.stats.hero_killed = True
-        if len(self.allCharacters) > 0:
-            for i, character in enumerate(self.allCharacters):
+        if len(self.all_characters) > 0:
+            for i, character in enumerate(self.all_characters):
                 if character['key'] is True:
                     key_holder = i
-                if character['character'] is "Boss":
+                if character['character'] == "Boss":
                     boss = i
 
-            if self.allCharacters[boss]['hp'] < 1 and self.allCharacters[key_holder]['hp'] < 1:
+            if self.all_characters[boss]['hp'] < 1 and self.all_characters[key_holder]['hp'] < 1:
                 print('boss and key holder killed')
-                self.stats.levelUp()
+                self.stats.level_up_stats()
                 self.stats.level_complete = True
 
-    def strikeHero(self):
-        heroArr = self.hero.hero_position
+    def strike_hero(self):
+        """Striking hero"""
+        hero_pos = self.hero.hero_position
 
-        if heroArr in self.skeletons:
-            self.skeletonStrike = self.skeletons.index(heroArr)
+        if hero_pos in self.skeletons:
+            self.skeleton_strike = self.skeletons.index(hero_pos)
         else:
-            self.skeletonStrike = ''
+            self.skeleton_strike = ''
 
         if time.time() - self.last_move_time < 1:
             return
         self.last_move_time = time.time()
 
-        if self.skeletonStrike != '':
-            self.skeletonStrike = self.skeletons.index(heroArr)
+        if self.skeleton_strike != '':
+            self.skeleton_strike = self.skeletons.index(hero_pos)
             self.hero.hero_hp = self.hero.hero_hp - 3
 
-            if self.allCharacters[self.skeletonStrike]["key"]:
+            if self.all_characters[self.skeleton_strike]["key"]:
                 print(
-                    f'{self.allCharacters[self.skeletonStrike]["character"]} has the key')
+                    f'{self.all_characters[self.skeleton_strike]["character"]} has the key')

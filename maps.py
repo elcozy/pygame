@@ -1,3 +1,4 @@
+"""Map module"""
 from tkinter import PhotoImage
 import random
 from game_constants import IMG_SIZE, FILEPATH
@@ -35,9 +36,9 @@ class MapTiles:
 
         for index, block in enumerate(self.tiles):
             for i in range(len(block) - 1):
-                canvas_image = self.tile_open if block[i] is 'o' else self.tile_block
+                canvas_image = self.tile_open if block[i] == 'o' else self.tile_block
                 canva.create_image(i * IMG_SIZE, tile_row *
                                    IMG_SIZE, image=canvas_image, anchor='nw')
-            if index is len(self.tiles) - 1:
+            if index == len(self.tiles) - 1:
                 break
             tile_row += 1

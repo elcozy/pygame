@@ -1,3 +1,4 @@
+"""Hero module"""
 from tkinter import PhotoImage, NW
 from game_constants import IMG_SIZE, FILEPATH
 from default import HeroHealthDefault
@@ -35,21 +36,22 @@ class Hero(HeroHealthDefault):
         x_pos = self.hero_position[0]
         y_pos = self.hero_position[1]
 
-        if i and self.tiles[y_pos][x_pos + i] is 'o':
+        if i and self.tiles[y_pos][x_pos + i] == 'o':
             self.hero_position = [x_pos + i, y_pos]
 
-        if j and self.tiles[y_pos + j][x_pos] is 'o':
+        if j and self.tiles[y_pos + j][x_pos] == 'o':
             self.hero_position = [x_pos, y_pos + j]
         self.move_time += 1
 
-        if self.move_time is 3:
+        if self.move_time == 3:
             self.move_time = 1
 
     def strike_enemy(self, skeleton):
         """Enemy strike method"""
 
-        for character in (skeleton.allCharacters):
-            if character["position"] is self.hero_position:
+        for character in (skeleton.all_characters):
+            print(character, 'character')
+            if character["position"] == self.hero_position:
                 if character['hp'] > 0:
                     character['hp'] = character['hp'] - 5
                 else:
