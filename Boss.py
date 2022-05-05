@@ -1,3 +1,4 @@
+"""Character module"""
 from random import randint
 from tkinter import PhotoImage
 from default import FILEPATH
@@ -30,7 +31,7 @@ class Boss(BossHealthDefault):
         # Generating random number from 0 - 10
         random_number = randint(0, 9)
 
-        while self.boss_created == False:
+        while self.boss_created is False:
             # Assigning to variables here
             random_arr_boss = [random_number, randint(0, 9)]
             boss_object = {

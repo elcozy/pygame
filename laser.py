@@ -1,15 +1,20 @@
 """Laser module"""
-import tkinter as tk  # Python 3.x
-from game_constants import WIDTH, HEIGHT
 
 import sys
 import os
+import tkinter as tk
+from game_constants import WIDTH, HEIGHT
 
 HALF_WIDTH = WIDTH / 2
 HALF_HEIGHT = HEIGHT / 2
 
-# master = tk.Tk()
-# master.title('Game Over')
+
+def restart_program():
+    """Restarts the current program.
+    Note: this function does not return. Any cleanup action (like
+    saving data) must be done before calling this function."""
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
 
 
 class Laser:
@@ -19,16 +24,16 @@ class Laser:
 
         self.can = tk.Canvas(master, width=250,
                              height=150, bg='black')
-        # self.rect = self.can.create_rectangle(
-        #     205, 10, 300, 105, outline='black', fill='white')
         self.rect = self.can.create_text(
             125, 50, fill="red",
             font="Times 35 italic bold", text='GAME OVER')
         self.btn = tk.Button(master, text='Restart Game', width=10,
-                             height=2, bd='2', command=self.restart_program)
-        #  height=2, bd='2', command=master.destroy)
+                             height=2, bd='2', command=restart_program)
+        self.btn2 = tk.Button(master, text='End Game', width=7,
+                              height=2, bd='2', command=master.destroy)
 
-        self.btn.place(x=20, y=100)
+        self.btn.place(x=10, y=100)
+        self.btn2.place(x=150, y=100)
 
         self.can.focus()
         self.can.grid()
@@ -44,16 +49,3 @@ class Laser:
         self.color_ind = not self.color_ind
 
         self.can.after(500, self.flash)
-
-    def restart_program(self):
-        """Restarts the current program.
-        Note: this function does not return. Any cleanup action (like
-        saving data) must be done before calling this function."""
-        python = sys.executable
-        os.execl(python, python, * sys.argv)
-
-
-# # master = tk.Tk()
-# # master.title('Game Over')
-# L = Laser(master)
-# master.mainloop()

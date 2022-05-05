@@ -37,7 +37,6 @@ class MainCharacter():
     def create_enemies(self, canva):
         """Creating the enemies"""
 
-        # for i, j in enumerate(self.all_characters):
         for character in self.all_characters:
             x_pos = character['position'][0] * IMG_SIZE
             y_pos = character['position'][1] * IMG_SIZE
@@ -161,8 +160,6 @@ class MainCharacter():
             if character['hp'] > 0:
                 self.skeletons.append(
                     character['position'])
-
-            # if len(self.skeletons) == 0:
 
     def level_up(self):
         """levelling up"""

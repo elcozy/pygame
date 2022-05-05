@@ -3,7 +3,6 @@ from tkinter import PhotoImage
 import random
 from game_constants import IMG_SIZE, FILEPATH
 
-
 tiles = []
 
 with open('tiles.txt', 'r', encoding="utf-8") as file:
@@ -28,7 +27,18 @@ class MapTiles:
 
     def shuffle_tiles(self):
         """"Shuffling tiles"""
-        return random.shuffle(self.tiles)
+        names = ['tiles2', 'tiles3']
+
+        # Set any array
+        random_array_item = random.choice(names)
+
+        self.tiles.clear()
+
+        with open(f'levels/{random_array_item}.txt', 'r', encoding="utf-8") as new_file:
+            new_tile_file = new_file.readlines()
+
+        for new_line in new_tile_file:
+            self.tiles.append(new_line)
 
     def draw_tiles(self, canva):
         """Method for drawing tiles"""
